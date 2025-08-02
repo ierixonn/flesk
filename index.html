@@ -5,193 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Отчет 48 часов | Telegram Mini App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #1e5799, #207cca, #2989d8, #1e5799);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 450px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: #0088cc;
-            padding: 30px 20px;
-            text-align: center;
-            color: white;
-            position: relative;
-        }
-        
-        .header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-        
-        .header p {
-            opacity: 0.9;
-            font-size: 1rem;
-        }
-        
-        .user-section {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 25px 20px 15px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #3a7bd5, #00d2ff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
-            margin-right: 20px;
-            overflow: hidden;
-        }
-        
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .user-info {
-            text-align: left;
-        }
-        
-        .user-info .name {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #333;
-        }
-        
-        .user-info .status {
-            color: #4caf50;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-        
-        .report-section {
-            padding: 30px 20px;
-            text-align: center;
-        }
-        
-        .report-title {
-            font-size: 1.2rem;
-            color: #666;
-            margin-bottom: 25px;
-        }
-        
-        .timer {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
-        .time-block {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px 15px;
-            min-width: 80px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .time-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: #0088cc;
-            line-height: 1;
-        }
-        
-        .time-label {
-            font-size: 0.9rem;
-            color: #888;
-            text-transform: uppercase;
-            margin-top: 8px;
-        }
-        
-        .progress-section {
-            padding: 0 20px 30px;
-        }
-        
-        .progress-title {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            color: #666;
-            font-size: 0.95rem;
-        }
-        
-        .progress-bar {
-            height: 12px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-
-background: linear-gradient(to right, #00c6ff, #0072ff);
-            border-radius: 10px;
-            width: 20%;
-            transition: width 1s ease;
-        }
-        
-        .footer {
-            text-align: center;
-            padding: 20px;
-            background: #f8f9fa;
-            color: #888;
-            font-size: 0.85rem;
-        }
-        
-        .telegram-icon {
-            color: #0088cc;
-            margin-right: 5px;
-        }
-        
-        @media (max-width: 480px) {
-            .header {
-                padding: 25px 15px;
-            }
-            
-            .time-block {
-                min-width: 70px;
-                padding: 15px 10px;
-            }
-            
-            .time-value {
-                font-size: 2rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
     <div class="container">
@@ -206,7 +20,8 @@ background: linear-gradient(to right, #00c6ff, #0072ff);
             </div>
             <div class="user-info">
                 <div class="name" id="username">Загрузка...</div>
-                <div class="status"><i class="fas fa-circle"></i> Онлайн в Telegram</div>
+                <div class="status" id="user-status"><i class="fas fa-circle"></i> Проверка статуса...</div>
+                <div class="last-seen" id="last-seen"></div>
             </div>
         </div>
         
@@ -236,6 +51,10 @@ background: linear-gradient(to right, #00c6ff, #0072ff);
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
+            <div class="admin-controls" id="admin-controls">
+                <input type="number" id="progress-input" min="0" max="100" placeholder="Введите процент (0-100)">
+                <button id="set-progress">Установить прогресс</button>
+            </div>
         </div>
         
         <div class="footer">
@@ -243,101 +62,7 @@ background: linear-gradient(to right, #00c6ff, #0072ff);
         </div>
     </div>
 
-<script>
-        // Данные пользователя (в реальном приложении будут из Telegram)
-        const mockUser = {
-            firstName: "Иван",
-            lastName: "Иванов",
-            username: "ivanov",
-            photoUrl: ""
-        };
-        
-        // Инициализация данных пользователя
-        function initUserData() {
-            const avatar = document.getElementById('avatar');
-            const username = document.getElementById('username');
-            
-            // В реальном Mini App: 
-            // const user = Telegram.WebApp.initDataUnsafe.user;
-            
-            const user = mockUser; // Заглушка
-            
-            if (user) {
-                // Установка имени
-                username.textContent = ${user.firstName} ${user.lastName};
-                
-                // Установка аватара
-                if (user.photoUrl) {
-                    avatar.innerHTML = <img src="${user.photoUrl}" alt="Avatar">;
-                } else {
-                    // Генерация аватара по инициалам
-                    const initials = user.firstName[0] + (user.lastName ? user.lastName[0] : '');
-                    avatar.innerHTML = initials;
-                    avatar.style.background = getRandomGradient();
-                }
-            }
-        }
-        
-        // Генерация случайного градиента
-        function getRandomGradient() {
-            const gradients = [
-                'linear-gradient(45deg, #ff416c, #ff4b2b)',
-                'linear-gradient(45deg, #3a7bd5, #00d2ff)',
-                'linear-gradient(45deg, #11998e, #38ef7d)',
-                'linear-gradient(45deg, #654ea3, #da98b4)',
-                'linear-gradient(45deg, #f46b45, #eea849)'
-            ];
-            return gradients[Math.floor(Math.random() * gradients.length)];
-        }
-        
-        // Обратный отсчет 48 часов
-        function startCountdown() {
-            const hoursElement = document.getElementById('hours');
-            const minutesElement = document.getElementById('minutes');
-            const secondsElement = document.getElementById('seconds');
-            const progressFill = document.getElementById('progress-fill');
-            const progressPercent = document.getElementById('progress-percent');
-            
-            // Установка времени: 48 часов = 172800 секунд
-            let totalSeconds = 48 * 60 * 60;
-            const totalTime = totalSeconds;
-            
-            const countdownInterval = setInterval(() => {
-                if (totalSeconds <= 0) {
-                    clearInterval(countdownInterval);
-                    // Действия после завершения отсчета
-                    return;
-                }
-                
-                totalSeconds--;
-                
-                // Расчет времени
-                const hours = Math.floor(totalSeconds / 3600);
-                const minutes = Math.floor((totalSeconds % 3600) / 60);
-                const seconds = totalSeconds % 60;
-                
-                // Обновление отображения
-                hoursElement.textContent = hours.toString().padStart(2, '0');
-                minutesElement.textContent = minutes.toString().padStart(2, '0');
-                secondsElement.textContent = seconds.toString().padStart(2, '0');
-                
-                // Расчет прогресса
-                const progress = ((totalTime - totalSeconds) / totalTime) * 100;
-                progressFill.style.width = ${progress}%;
-                progressPercent.textContent = ${Math.round(progress)}%;
-                
-            }, 1000);
-        }
-        
-        // Инициализация при загрузке
-        window.onload = function() {
-            initUserData();
-            startCountdown();
-            
-            // В реальном Mini App: 
-            // Telegram.WebApp.ready();
-            // Telegram.WebApp.expand();
-        };
-    </script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script type="module" src="/app.js"></script>
 </body>
-                  </html>
+</html>
